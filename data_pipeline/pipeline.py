@@ -52,7 +52,7 @@ def main() -> None:
     print("Step 5/6: verifying pd.read_sql vs pd.merge equivalence for the JOIN query ...")
     books_df = pd.read_sql("SELECT * FROM books;", conn)
     categories_df = pd.read_sql("SELECT * FROM categories;", conn)
-    sql_join_result = results["top_rated_books_per_category"]
+    sql_join_result = results["top_5_rated_books_per_category"]
     merge_result = merge_equivalent_top_rated_per_category(books_df, categories_df)
     equivalent = sql_join_result.reset_index(drop=True).equals(merge_result.reset_index(drop=True))
     print(f"  pd.read_sql JOIN result equals pd.merge result: {equivalent}")

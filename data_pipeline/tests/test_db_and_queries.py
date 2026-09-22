@@ -9,11 +9,13 @@ from src.queries import QUERIES, merge_equivalent_top_rated_per_category, run_al
 
 @pytest.fixture
 def clean_df():
+    # 8 books per category (> 5) so the top-5-per-category query's LIMIT
+    # behavior is actually exercised, not vacuously true.
     rows = []
     for cat, prices, ratings in [
-        ("Fiction", [10.0, 25.0, 45.0], [5, 3, 1]),
-        ("Mystery", [15.0, 35.0, 55.0], [4, 4, 2]),
-        ("Classics", [5.0, 22.0, 60.0], [5, 3, 5]),
+        ("Fiction", [10.0, 25.0, 45.0, 12.0, 18.0, 33.0, 41.0, 9.0], [5, 3, 1, 5, 4, 2, 3, 5]),
+        ("Mystery", [15.0, 35.0, 55.0, 20.0, 28.0, 44.0, 8.0, 60.0], [4, 4, 2, 5, 3, 1, 5, 2]),
+        ("Classics", [5.0, 22.0, 60.0, 14.0, 31.0, 50.0, 19.0, 27.0], [5, 3, 5, 4, 2, 1, 5, 3]),
     ]:
         for i, (p, r) in enumerate(zip(prices, ratings)):
             rows.append(
@@ -79,10 +81,19 @@ class TestQueries:
         results = run_all_queries(db_conn)
         assert len(results["distinct_categories"]) == clean_df["category"].nunique()
 
+    def test_top_5_query_returns_exactly_5_per_category_and_is_sorted(self, db_conn):
+        results = run_all_queries(db_conn)
+        df = results["top_5_rated_books_per_category"]
+        counts = df.groupby("category_name").size()
+        assert (counts == 5).all(), "each category has 8 candidate books, so top-5 should cut off at exactly 5"
+        for _, group in df.groupby("category_name"):
+            ratings = group["rating"].tolist()
+            assert ratings == sorted(ratings, reverse=True)
+
     def test_read_sql_and_merge_equivalent_for_join_query(self, db_conn):
         results = run_all_queries(db_conn)
         books_df = pd.read_sql("SELECT * FROM books;", db_conn)
         categories_df = pd.read_sql("SELECT * FROM categories;", db_conn)
         merge_result = merge_equivalent_top_rated_per_category(books_df, categories_df)
-        sql_result = results["top_rated_books_per_category"].reset_index(drop=True)
+        sql_result = results["top_5_rated_books_per_category"].reset_index(drop=True)
         pd.testing.assert_frame_equal(sql_result, merge_result.reset_index(drop=True))

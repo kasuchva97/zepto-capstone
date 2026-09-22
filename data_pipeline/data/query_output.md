@@ -128,65 +128,78 @@ Rows returned: 36
 | Poisonous (Max Revere Novels #3)                                              |       26.8  |
 | The Widow                                                                     |       27.26 |
 
-## `top_rated_books_per_category`
+## `top_5_rated_books_per_category`
 
 ```sql
-SELECT c.category_name, b.title, b.rating, b.price_inr
-        FROM books b
-        JOIN categories c ON b.category_id = c.category_id
-        ORDER BY c.category_name, b.rating DESC, b.price_inr ASC;
+WITH ranked AS (
+            SELECT
+                c.category_name,
+                b.title,
+                b.rating,
+                b.price_inr,
+                ROW_NUMBER() OVER (
+                    PARTITION BY c.category_name
+                    ORDER BY b.rating DESC, b.price_inr ASC
+                ) AS rnk
+            FROM books b
+            JOIN categories c ON b.category_id = c.category_id
+        )
+        SELECT category_name, title, rating, price_inr
+        FROM ranked
+        WHERE rnk <= 5
+        ORDER BY category_name, rnk;
 ```
 
-Rows returned: 77
+Rows returned: 15
 
-| category_name   | title                                                                         |   rating |   price_inr |
-|:----------------|:------------------------------------------------------------------------------|---------:|------------:|
-| Classics        | The Secret Garden                                                             |        4 |     1590.94 |
-| Classics        | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
-| Classics        | Little Women (Little Women #1)                                                |        4 |     2961.38 |
-| Classics        | The Story of Hong Gildong                                                     |        4 |     4556.54 |
-| Classics        | Wuthering Heights                                                             |        3 |     1870.52 |
-| Classics        | Gone with the Wind                                                            |        3 |     3427.7  |
-| Classics        | Animal Farm                                                                   |        3 |     6036.71 |
-| Classics        | Candide                                                                       |        3 |     6185.46 |
-| Classics        | The Hound of the Baskervilles (Sherlock Holmes #5)                            |        2 |     1563.51 |
-| Classics        | The Picture of Dorian Gray                                                    |        2 |     3133.35 |
-| Classics        | Emma                                                                          |        2 |     3474.12 |
-| Classics        | And Then There Were None                                                      |        2 |     3693.56 |
-| Classics        | Beowulf                                                                       |        2 |     4045.92 |
-| Classics        | The Little Prince                                                             |        2 |     4791.81 |
-| Classics        | Of Mice and Men                                                               |        2 |     4970.1  |
+| category_name      | title                                                                         |   rating |   price_inr |
+|:-------------------|:------------------------------------------------------------------------------|---------:|------------:|
+| Classics           | The Secret Garden                                                             |        4 |     1590.94 |
+| Classics           | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
+| Classics           | Little Women (Little Women #1)                                                |        4 |     2961.38 |
+| Classics           | The Story of Hong Gildong                                                     |        4 |     4556.54 |
+| Classics           | Wuthering Heights                                                             |        3 |     1870.52 |
+| Historical Fiction | A Spy's Devotion (The Regency Spies of London #1)                             |        5 |     1790.33 |
+| Historical Fiction | Between Shades of Gray                                                        |        5 |     2193.34 |
+| Historical Fiction | Voyager (Outlander #3)                                                        |        5 |     2222.89 |
+| Historical Fiction | The Passion of Dolssa                                                         |        5 |     2987.76 |
+| Historical Fiction | Mrs. Houdini                                                                  |        5 |     3191.38 |
+| Mystery            | The Girl You Lost                                                             |        5 |     1296.59 |
+| Mystery            | The Silkworm (Cormoran Strike #2)                                             |        5 |     2431.78 |
+| Mystery            | What Happened on Beale Street (Secrets of the South Mysteries #2)             |        5 |     2676.54 |
+| Mystery            | A Time of Torment (Charlie Parker #14)                                        |        5 |     5100.92 |
+| Mystery            | The Bachelor Girl's Guide to Murder (Herringford and Watts Mysteries #1)      |        5 |     5517.65 |
 
 ## pd.read_sql vs pd.merge equivalence (JOIN query)
 
 `pd.read_sql` result (first 10 rows):
 
-| category_name   | title                                                                         |   rating |   price_inr |
-|:----------------|:------------------------------------------------------------------------------|---------:|------------:|
-| Classics        | The Secret Garden                                                             |        4 |     1590.94 |
-| Classics        | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
-| Classics        | Little Women (Little Women #1)                                                |        4 |     2961.38 |
-| Classics        | The Story of Hong Gildong                                                     |        4 |     4556.54 |
-| Classics        | Wuthering Heights                                                             |        3 |     1870.52 |
-| Classics        | Gone with the Wind                                                            |        3 |     3427.7  |
-| Classics        | Animal Farm                                                                   |        3 |     6036.71 |
-| Classics        | Candide                                                                       |        3 |     6185.46 |
-| Classics        | The Hound of the Baskervilles (Sherlock Holmes #5)                            |        2 |     1563.51 |
-| Classics        | The Picture of Dorian Gray                                                    |        2 |     3133.35 |
+| category_name      | title                                                                         |   rating |   price_inr |
+|:-------------------|:------------------------------------------------------------------------------|---------:|------------:|
+| Classics           | The Secret Garden                                                             |        4 |     1590.94 |
+| Classics           | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
+| Classics           | Little Women (Little Women #1)                                                |        4 |     2961.38 |
+| Classics           | The Story of Hong Gildong                                                     |        4 |     4556.54 |
+| Classics           | Wuthering Heights                                                             |        3 |     1870.52 |
+| Historical Fiction | A Spy's Devotion (The Regency Spies of London #1)                             |        5 |     1790.33 |
+| Historical Fiction | Between Shades of Gray                                                        |        5 |     2193.34 |
+| Historical Fiction | Voyager (Outlander #3)                                                        |        5 |     2222.89 |
+| Historical Fiction | The Passion of Dolssa                                                         |        5 |     2987.76 |
+| Historical Fiction | Mrs. Houdini                                                                  |        5 |     3191.38 |
 
 `pd.merge` result on in-memory DataFrames (first 10 rows):
 
-| category_name   | title                                                                         |   rating |   price_inr |
-|:----------------|:------------------------------------------------------------------------------|---------:|------------:|
-| Classics        | The Secret Garden                                                             |        4 |     1590.94 |
-| Classics        | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
-| Classics        | Little Women (Little Women #1)                                                |        4 |     2961.38 |
-| Classics        | The Story of Hong Gildong                                                     |        4 |     4556.54 |
-| Classics        | Wuthering Heights                                                             |        3 |     1870.52 |
-| Classics        | Gone with the Wind                                                            |        3 |     3427.7  |
-| Classics        | Animal Farm                                                                   |        3 |     6036.71 |
-| Classics        | Candide                                                                       |        3 |     6185.46 |
-| Classics        | The Hound of the Baskervilles (Sherlock Holmes #5)                            |        2 |     1563.51 |
-| Classics        | The Picture of Dorian Gray                                                    |        2 |     3133.35 |
+| category_name      | title                                                                         |   rating |   price_inr |
+|:-------------------|:------------------------------------------------------------------------------|---------:|------------:|
+| Classics           | The Secret Garden                                                             |        4 |     1590.94 |
+| Classics           | The Complete Stories and Poems (The Works of Edgar Allan Poe [Cameo Edition]) |        4 |     2825.29 |
+| Classics           | Little Women (Little Women #1)                                                |        4 |     2961.38 |
+| Classics           | The Story of Hong Gildong                                                     |        4 |     4556.54 |
+| Classics           | Wuthering Heights                                                             |        3 |     1870.52 |
+| Historical Fiction | A Spy's Devotion (The Regency Spies of London #1)                             |        5 |     1790.33 |
+| Historical Fiction | Between Shades of Gray                                                        |        5 |     2193.34 |
+| Historical Fiction | Voyager (Outlander #3)                                                        |        5 |     2222.89 |
+| Historical Fiction | The Passion of Dolssa                                                         |        5 |     2987.76 |
+| Historical Fiction | Mrs. Houdini                                                                  |        5 |     3191.38 |
 
 **Equivalent (full result sets, all rows): True**

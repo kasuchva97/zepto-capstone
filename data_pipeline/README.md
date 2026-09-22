@@ -93,7 +93,7 @@ beyond what the assignment strictly requires. See `src/db.py:SCHEMA_SQL`.
 | `distinct_categories` | `DISTINCT` |
 | `high_rated_books` | `IN` |
 | `midrange_priced_books` | `BETWEEN` |
-| `top_rated_books_per_category` | `JOIN` (+ `ORDER BY`) — highest-rated books per category |
+| `top_5_rated_books_per_category` | `JOIN` (+ window function `ROW_NUMBER`, `ORDER BY`) — the actual top 5 highest-rated books within each category, not just all books sorted by category |
 
 **pandas equivalence.** `pipeline.py` reads `books` and `categories` back with
 `pd.read_sql`, and separately reproduces the JOIN query's result with `pd.merge`
