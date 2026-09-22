@@ -23,24 +23,24 @@ sufficient to satisfy the rubric, but natural feature branches per module are fi
 
 ## Module 1 — /data_pipeline (25 marks)
 
-- [ ] Scrape books.toscrape.com: >=60 books across >=3 categories (requests + BeautifulSoup)
-  - [ ] capture title, price (GBP), star_rating (text), availability (text), category
-- [ ] Clean fields:
-  - [ ] price -> price_gbp (float, strip currency symbol)
-  - [ ] star_rating text (One..Five) -> rating (int 1-5)
-  - [ ] availability text -> in_stock (bool)
-  - [ ] handle any unparseable rows: median-impute numeric or drop + justify in README
-- [ ] price_inr = price_gbp * 105.50 (fixed baseline rate, stated exactly in README)
-  - [ ] (optional, skip) live FX lookup with status-code handling + fallback
-- [ ] SQLite schema: >=2 tables with PK/FK (categories, books)
-- [ ] Insert cleaned data via sqlite3 or to_sql
-- [ ] >=5 SQL queries covering: SELECT/WHERE, ORDER BY, LIMIT, DISTINCT, IN/BETWEEN, >=1 JOIN
-  - [ ] save query strings + printed output
-- [ ] pd.read_sql for >=2 queries; pd.merge reproduces the JOIN query from in-memory DataFrames; show equivalence
-- [ ] module README: install/run steps, cleaning/parsing decisions, exact FX rate
-- [ ] repo includes sqlite db file OR exact regeneration script
-- [ ] tests for: price parsing, rating mapping, in_stock parsing, FX conversion, schema/FK integrity, query correctness
-- [ ] feature branch created, >=2 commits, merged to main (whole-repo git rubric)
+- [x] Scrape books.toscrape.com: >=60 books across >=3 categories (requests + BeautifulSoup)
+  - [x] capture title, price (GBP), star_rating (text), availability (text), category
+- [x] Clean fields:
+  - [x] price -> price_gbp (float, strip currency symbol)
+  - [x] star_rating text (One..Five) -> rating (int 1-5)
+  - [x] availability text -> in_stock (bool)
+  - [x] handle any unparseable rows: median-impute numeric or drop + justify in README
+- [x] price_inr = price_gbp * 105.50 (fixed baseline rate, stated exactly in README)
+  - [x] (optional, skip) live FX lookup with status-code handling + fallback
+- [x] SQLite schema: >=2 tables with PK/FK (categories, books)
+- [x] Insert cleaned data via sqlite3 or to_sql
+- [x] >=5 SQL queries covering: SELECT/WHERE, ORDER BY, LIMIT, DISTINCT, IN/BETWEEN, >=1 JOIN
+  - [x] save query strings + printed output
+- [x] pd.read_sql for >=2 queries; pd.merge reproduces the JOIN query from in-memory DataFrames; show equivalence
+- [x] module README: install/run steps, cleaning/parsing decisions, exact FX rate
+- [x] repo includes sqlite db file OR exact regeneration script
+- [x] tests for: price parsing, rating mapping, in_stock parsing, FX conversion, schema/FK integrity, query correctness
+- [x] feature branch created, >=2 commits, merged to main (whole-repo git rubric)
 
 ## Module 2 — /analytics (50 marks)
 

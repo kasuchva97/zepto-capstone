@@ -13,7 +13,7 @@ One connected platform, three modules, built and graded together:
 
 ## Status
 
-- [ ] `/data_pipeline` — in progress
+- [x] `/data_pipeline` — complete
 - [ ] `/analytics` — not started
 - [ ] `/support_assistant` — not started
 
@@ -40,8 +40,16 @@ Repeat the same pattern inside `analytics/` and `support_assistant/`.
 
 ## How to run each module
 
-Filled in as each module lands — see that module's own README for exact commands
-in the meantime (each module README is self-contained).
+**Data Pipeline:**
+```bash
+cd data_pipeline && python -m venv .venv && .venv\Scripts\activate
+pip install -r requirements.txt
+python pipeline.py        # scrape -> clean -> load SQLite -> run SQL queries
+python -m pytest -q       # 28 tests
+```
+See [`data_pipeline/README.md`](data_pipeline/README.md) for full details.
+
+**Analytics** and **Support Assistant:** to be filled in as those modules land.
 
 ## Design decisions
 
@@ -49,7 +57,14 @@ Summarized per module below once each module is complete; full detail lives in e
 module's own README.
 
 ### Data Pipeline
-_TBD_
+Scrapes 3 named categories (Mystery/Historical Fiction/Classics, 77 books total,
+comfortably over the 60-row minimum) rather than paginating the generic catalogue, so
+every row carries a real category label. Fixed a UTF-8 encoding bug where the site's
+undeclared charset made `requests` mangle `£` into `Â£`. Unparseable numeric fields
+(price, rating) are median-imputed; unparseable identity fields (title, category) or
+the boolean `in_stock` field are dropped, since a boolean can't be meaningfully
+median-imputed. `price_inr` uses the fixed 1 GBP = 105.50 INR baseline exactly as
+specified. Full rationale in [`data_pipeline/README.md`](data_pipeline/README.md).
 
 ### Analytics
 _TBD_
