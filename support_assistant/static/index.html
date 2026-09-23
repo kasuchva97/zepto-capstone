@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zepto Support Assistant</title>
+<style>
+  :root {
+    --bg: #faf8f4;
+    --panel: #ffffff;
+    --border: #e7e2d8;
+    --ink: #2b2a27;
+    --ink-soft: #6b6558;
+    --accent: #7c3f2e;
+    --accent-soft: #f3e6df;
+    --accent-strong: #5c2e21;
+    --success: #3a6b4a;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(43, 42, 39, 0.04), 0 8px 24px rgba(43, 42, 39, 0.06);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 15% 0%, #fff7ef 0%, transparent 45%),
+                       radial-gradient(circle at 85% 15%, #fdf1e7 0%, transparent 40%);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+
+  .examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .example-chip {
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #fdfcfa;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .example-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fdfcfa;
+    min-height: 52px;
+    line-height: 1.4;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  button.ask-btn {
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button.ask-btn:hover { background: var(--accent-strong); }
+  button.ask-btn:disabled { background: #c9c2b4; cursor: not-allowed; }
+
+  .result {
+    margin-top: 20px;
+    display: none;
+  }
+  .result.visible { display: block; }
+
+  .answer-card {
+    border: 1px solid var(--border);
+    background: #fdfcfa;
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge.confidence { background: var(--accent-soft); color: var(--accent-strong); }
+  .badge.source { background: #eaf1ec; color: var(--success); }
+
+  .loading {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 16px;
+    display: none;
+  }
+  .loading.visible { display: block; }
+
+  footer {
+    margin-top: 28px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.6;
+  }
+  footer code {
+    background: var(--accent-soft);
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--accent-strong);
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">Z</div>
+        <h1>Zepto Support Assistant</h1>
+      </div>
+      <p class="subtitle">Ask about Zepto's delivery, returns, membership, tracking, cancellation, gift card, or support-hours policies.</p>
+    </header>
+
+    <div class="panel">
+      <div class="examples">
+        <span class="example-chip" data-q="How much does standard delivery cost?">Delivery cost?</span>
+        <span class="example-chip" data-q="Can I get a refund for a damaged item?">Damaged item refund?</span>
+        <span class="example-chip" data-q="How do I cancel my order?">Cancel an order?</span>
+        <span class="example-chip" data-q="What is the meaning of life?">Off-topic question</span>
+      </div>
+      <div class="input-row">
+        <textarea id="query" placeholder="e.g. How long does delivery take?"></textarea>
+        <button class="ask-btn" id="askBtn">Ask</button>
+      </div>
+      <div class="loading" id="loading">Thinking…</div>
+      <div class="result" id="result">
+        <div class="answer-card" id="answerText"></div>
+        <div class="meta-row" id="metaRow"></div>
+      </div>
+    </div>
+
+    <footer>
+      Running with <code>MOCK_LLM</code> at its default (deterministic, offline) unless the server was started with <code>MOCK_LLM=0</code>.
+    </footer>
+  </div>
+
+<script>
+  const askBtn = document.getElementById('askBtn');
+  const queryEl = document.getElementById('query');
+  const resultEl = document.getElementById('result');
+  const answerEl = document.getElementById('answerText');
+  const metaEl = document.getElementById('metaRow');
+  const loadingEl = document.getElementById('loading');
+
+  document.querySelectorAll('.example-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      queryEl.value = chip.dataset.q;
+      askQuestion();
+    });
+  });
+
+  askBtn.addEventListener('click', askQuestion);
+  queryEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      askQuestion();
+    }
+  });
+
+  async function askQuestion() {
+    const query = queryEl.value.trim();
+    if (!query) return;
+
+    askBtn.disabled = true;
+    loadingEl.classList.add('visible');
+    resultEl.classList.remove('visible');
+
+    try {
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+
+      answerEl.textContent = data.answer;
+      metaEl.innerHTML = '';
+
+      const confBadge = document.createElement('span');
+      confBadge.className = 'badge confidence';
+      confBadge.textContent = `Confidence: ${(data.confidence * 100).toFixed(0)}%`;
+      metaEl.appendChild(confBadge);
+
+      (data.sources || []).forEach(src => {
+        const b = document.createElement('span');
+        b.className = 'badge source';
+        b.textContent = src;
+        metaEl.appendChild(b);
+      });
+
+      resultEl.classList.add('visible');
+    } catch (err) {
+      answerEl.textContent = 'Something went wrong reaching the assistant.';
+      metaEl.innerHTML = '';
+      resultEl.classList.add('visible');
+    } finally {
+      askBtn.disabled = false;
+      loadingEl.classList.remove('visible');
+    }
+  }
+</script>
+</body>
+</html>
