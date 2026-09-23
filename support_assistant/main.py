@@ -17,6 +17,7 @@ from src.graph import build_support_graph, run_support_graph
 from src.ingest import DEFAULT_PERSIST_DIR, ingest_documents
 from src.schemas import AskRequest, AskResponse
 
+BASE_DIR = pathlib.Path(__file__).resolve().parent
 _state: dict = {}
 
 
@@ -35,12 +36,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Zepto Support Assistant", lifespan=lifespan)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 
 @app.get("/")
 async def demo_page():
-    return FileResponse("static/index.html")
+    return FileResponse(str(BASE_DIR / "static" / "index.html"))
 
 
 @app.post("/ask", response_model=AskResponse)
