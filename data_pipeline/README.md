@@ -9,12 +9,16 @@ into a normalized SQLite schema, and demonstrates SQL + pandas querying against 
 
 ```bash
 cd data_pipeline
-python -m venv .venv
+py -3.11 -m venv .venv        # Windows; `python3.11 -m venv .venv` on macOS/Linux
 .venv\Scripts\activate        # Windows; `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
 ```
 
-Built and tested with **Python 3.11**.
+**Requires Python 3.11** (what this was built and tested against). Newer Pythons
+(3.13+) may lack prebuilt wheels for some dependencies here and can hang trying to
+build them from source — check `python --version` first, and if it isn't 3.11.x,
+install Python 3.11 from [python.org](https://www.python.org/downloads/) alongside
+your existing version rather than swapping `py -3.11` for plain `python` above.
 
 ## Run end to end
 
@@ -38,7 +42,7 @@ from-scratch regeneration script if you want to reproduce it.
 python -m pytest -q
 ```
 
-28 tests covering price/rating/availability parsing, the FX conversion, the
+29 tests covering price/rating/availability parsing, the FX conversion, the
 missing-value fallback rules, the SQLite schema's PK/FK and CHECK constraints, and
 that every required SQL query runs and that `pd.read_sql` matches `pd.merge` exactly
 on the JOIN query.
@@ -111,7 +115,7 @@ data_pipeline/
 │   ├── clean.py               # field parsing/typing + missing-value handling
 │   ├── db.py                  # SQLite schema + loader
 │   └── queries.py             # the 6 required SQL queries + pandas-merge equivalence
-├── tests/                    # pytest suite (28 tests)
+├── tests/                    # pytest suite (29 tests)
 ├── data/                      # generated: raw/clean CSVs, zepto_books.db, query_output.md
 └── requirements.txt
 ```

@@ -11,12 +11,19 @@ network) — the required, graded baseline.
 
 ```bash
 cd support_assistant
-python -m venv .venv
-.venv\Scripts\activate
+py -3.11 -m venv .venv        # Windows; `python3.11 -m venv .venv` on macOS/Linux
+.venv\Scripts\activate        # Windows; `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
 ```
 
-Built and tested with **Python 3.11**. The `all-MiniLM-L6-v2` embedding model
+**Requires Python 3.11** (what this was built and tested against). Newer Pythons
+(3.13+) may lack prebuilt wheels for some dependencies here (chromadb,
+sentence-transformers, torch) and can hang trying to build them from source — check
+`python --version` first, and if it isn't 3.11.x, install Python 3.11 from
+[python.org](https://www.python.org/downloads/) alongside your existing version
+rather than swapping `py -3.11` for plain `python` above.
+
+The `all-MiniLM-L6-v2` embedding model
 downloads once on first use (needs internet) and is cached locally afterward — this
 is the same one-time-download-then-cache pattern as `sns.load_dataset` in Module 2.
 

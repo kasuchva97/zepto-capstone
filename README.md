@@ -25,16 +25,25 @@ the three modules need very different, occasionally conflicting dependency stack
 `chromadb`/`sentence-transformers`/`torch`/`langgraph`/`fastapi`), so isolating them
 per module avoids version conflicts and keeps each module independently runnable.
 
-All modules were built and tested against **Python 3.11** (newer Pythons, e.g. 3.13+,
-don't yet have stable wheels for some of the heavier ML/embedding libraries on Windows).
+**Requires Python 3.11.** All three modules were built and tested against it.
+Newer Pythons (3.13, 3.14) do **not** yet have prebuilt wheels for some of the
+heavier dependencies here (pandas, scikit-learn, chromadb, sentence-transformers,
+torch) — `pip install` on those versions can hang for a very long time trying to
+compile them from source instead of failing fast, which is worse than a quick error.
+Check `python --version` / `python3 --version` first; if it isn't 3.11.x, install
+Python 3.11 from [python.org](https://www.python.org/downloads/) (safe to install
+alongside whatever version you already have — it won't replace it) and use the
+version-specific commands below instead of the plain `python` command.
+
 Create a separate virtual environment per module:
 
 ```bash
 cd data_pipeline
-python -m venv .venv
-.venv\Scripts\activate   # Windows; use `source .venv/bin/activate` on macOS/Linux
+py -3.11 -m venv .venv          # Windows; use `python3.11 -m venv .venv` on macOS/Linux
+.venv\Scripts\activate           # Windows; use `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
 ```
+(If `python --version` already reports 3.11.x, plain `python -m venv .venv` works too.)
 
 Repeat the same pattern inside `analytics/` and `support_assistant/`.
 
@@ -42,16 +51,16 @@ Repeat the same pattern inside `analytics/` and `support_assistant/`.
 
 **Data Pipeline:**
 ```bash
-cd data_pipeline && python -m venv .venv && .venv\Scripts\activate
+cd data_pipeline && py -3.11 -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
 python pipeline.py        # scrape -> clean -> load SQLite -> run SQL queries
-python -m pytest -q       # 28 tests
+python -m pytest -q       # 29 tests
 ```
 See [`data_pipeline/README.md`](data_pipeline/README.md) for full details.
 
 **Analytics:**
 ```bash
-cd analytics && python -m venv .venv && .venv\Scripts\activate
+cd analytics && py -3.11 -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
 jupyter nbconvert --to notebook --execute --inplace 01_eda.ipynb       # Part A: profile, clean, EDA story; writes titanic.csv
 jupyter nbconvert --to notebook --execute --inplace 02_modeling.ipynb  # Part B: classification + regression pipeline
@@ -63,7 +72,7 @@ full details, all written interpretations, and the model comparison table.
 
 **Support Assistant:**
 ```bash
-cd support_assistant && python -m venv .venv && .venv\Scripts\activate
+cd support_assistant && py -3.11 -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --host 127.0.0.1 --port 8000   # then open http://127.0.0.1:8000/
 python -m pytest -q       # 39 tests

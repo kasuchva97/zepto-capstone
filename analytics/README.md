@@ -30,12 +30,17 @@ jupytext --to notebook 02_modeling.py && jupyter nbconvert --to notebook --execu
 
 ```bash
 cd analytics
-python -m venv .venv
-.venv\Scripts\activate
+py -3.11 -m venv .venv        # Windows; `python3.11 -m venv .venv` on macOS/Linux
+.venv\Scripts\activate        # Windows; `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
 ```
 
-Built and tested with **Python 3.11**.
+**Requires Python 3.11** (what this was built and tested against). Newer Pythons
+(3.13+) may lack prebuilt wheels for some dependencies here (pandas, scikit-learn,
+etc.) and can hang trying to build them from source — check `python --version` first,
+and if it isn't 3.11.x, install Python 3.11 from
+[python.org](https://www.python.org/downloads/) alongside your existing version
+rather than swapping `py -3.11` for plain `python` above.
 
 ## Run end to end
 
