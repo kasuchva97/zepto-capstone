@@ -9,9 +9,26 @@ from main import app
 
 
 @pytest.fixture(scope="module")
-def client():
-    with TestClient(app) as c:  # runs the lifespan (ingest_documents + build graph) once
-        yield c
+def client(tmp_path_factory):
+    """Points the app's lifespan at a throwaway ChromaDB directory (via
+    CHROMA_PERSIST_DIR) instead of the default chroma_store/. Without this,
+    running this test suite while a real dev server is up would delete and
+    rebuild that server's collection out from under it -- ingest_documents()
+    always deletes + recreates the collection, and the running server's
+    in-memory reference to the old one would then 500 on every request.
+    (This is exactly what happened once during development -- see git log.)
+    """
+    persist_dir = tmp_path_factory.mktemp("test_api_chroma_store")
+    previous = os.environ.get("CHROMA_PERSIST_DIR")
+    os.environ["CHROMA_PERSIST_DIR"] = str(persist_dir)
+    try:
+        with TestClient(app) as c:  # runs the lifespan (ingest_documents + build graph) once
+            yield c
+    finally:
+        if previous is None:
+            os.environ.pop("CHROMA_PERSIST_DIR", None)
+        else:
+            os.environ["CHROMA_PERSIST_DIR"] = previous
 
 
 class TestAskEndpoint:
