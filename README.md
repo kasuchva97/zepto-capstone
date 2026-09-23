@@ -15,7 +15,7 @@ One connected platform, three modules, built and graded together:
 
 - [x] `/data_pipeline` — complete
 - [x] `/analytics` — complete
-- [ ] `/support_assistant` — not started
+- [x] `/support_assistant` — complete
 
 ## Setup
 
@@ -61,7 +61,16 @@ Both notebooks are already committed pre-executed with full output, so re-runnin
 isn't required for grading. See [`analytics/README.md`](analytics/README.md) for
 full details, all written interpretations, and the model comparison table.
 
-**Support Assistant:** to be filled in once that module lands.
+**Support Assistant:**
+```bash
+cd support_assistant && python -m venv .venv && .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --host 127.0.0.1 --port 8000   # then open http://127.0.0.1:8000/
+python -m pytest -q       # 39 tests
+```
+`MOCK_LLM` is left at its default (deterministic, offline, no API key) for grading.
+See [`support_assistant/README.md`](support_assistant/README.md) for the architecture
+description, example `/ask` calls, and Docker instructions.
 
 ## Design decisions
 
@@ -91,7 +100,18 @@ interpretations, and the model comparison table are in
 [`analytics/README.md`](analytics/README.md).
 
 ### Support Assistant
-_TBD_
+8 policy documents embedded locally (`sentence-transformers` `all-MiniLM-L6-v2`, no
+API key) into ChromaDB, orchestrated by a 3-node LangGraph `StateGraph`
+(`classify_intent` → conditional edge → `retrieve_and_answer` / `direct_answer`).
+Retrieval always runs for real; only each node's final answer-generation step is
+gated behind `MOCK_LLM` (default: deterministic canned logic, no LLM call at all —
+the graded baseline; `MOCK_LLM=0` is an optional, ungraded Groq extension, not
+exercised against a real account in this submission). Wrapped in FastAPI (`POST
+/ask`, Pydantic-validated schema) with a custom light-theme demo page. **Note:**
+Docker isn't installed in the environment this was built in, so the `Dockerfile` was
+written and reviewed carefully but not build-tested end-to-end — see
+[`support_assistant/README.md`](support_assistant/README.md) for details and to
+verify it yourself.
 
 ## Git workflow
 

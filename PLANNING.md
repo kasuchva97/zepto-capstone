@@ -70,24 +70,24 @@ Part B — modeling
 
 ## Module 3 — /support_assistant (25 marks)
 
-- [ ] 8 corpus docs copied verbatim into docs/doc_01.txt..doc_08.txt
-- [ ] chunk + embed with all-MiniLM-L6-v2 (sentence-transformers) -> store in ChromaDB collection
-- [ ] structured prompt template: role/context/task/format/length + negative constraint + few-shot example (actual text, used by optional real-LLM path)
-- [ ] LangGraph StateGraph, TypedDict state, >=3 nodes:
-  - [ ] classify_intent: keyword heuristic (delivery/return/refund/membership/tracking/cancel/gift card/support hours) when MOCK_LLM unset/1
-  - [ ] retrieve_and_answer: real embedding+Chroma top-3 retrieval always; mock answer = "Based on the retrieved context: {top_chunk_snippet}"
-  - [ ] direct_answer: mock = fixed canned string
-  - [ ] conditional edge routes policy_question -> retrieve_and_answer, general_question -> direct_answer
-- [ ] Pydantic response schema: answer (str), sources (list[str]), confidence (float 0-1); deterministic in mock mode
-  - [ ] (optional) retry-on-validation-failure logic present for real-LLM path
-- [ ] FastAPI POST /ask; Pydantic request {"query": str}; >=2 example calls recorded (one retrieval, one not), MOCK_LLM default
-- [ ] Dockerfile: builds and runs locally, serves /ask (uvicorn main:app --host 0.0.0.0 --port 7860)
-- [ ] README: RAG architecture description (ingestion->embedding->retrieval->generation, which file/node does what) + MOCK_LLM branch explanation
-- [ ] tests for: classify_intent heuristic both branches, retrieval returns correct-doc chunks, mock response schema validity, /ask endpoint via TestClient
-- [ ] light-theme custom demo frontend for /ask (extra, not required by spec, per user's UI request) — simple static page, not generic
+- [x] 8 corpus docs copied verbatim into docs/doc_01.txt..doc_08.txt
+- [x] chunk + embed with all-MiniLM-L6-v2 (sentence-transformers) -> store in ChromaDB collection
+- [x] structured prompt template: role/context/task/format/length + negative constraint + few-shot example (actual text, used by optional real-LLM path)
+- [x] LangGraph StateGraph, TypedDict state, >=3 nodes:
+  - [x] classify_intent: keyword heuristic (delivery/return/refund/membership/tracking/cancel/gift card/support hours) when MOCK_LLM unset/1
+  - [x] retrieve_and_answer: real embedding+Chroma top-3 retrieval always; mock answer = "Based on the retrieved context: {top_chunk_snippet}"
+  - [x] direct_answer: mock = fixed canned string
+  - [x] conditional edge routes policy_question -> retrieve_and_answer, general_question -> direct_answer
+- [x] Pydantic response schema: answer (str), sources (list[str]), confidence (float 0-1); deterministic in mock mode
+  - [x] (optional) retry-on-validation-failure logic present for real-LLM path
+- [x] FastAPI POST /ask; Pydantic request {"query": str}; >=2 example calls recorded (one retrieval, one not), MOCK_LLM default
+- [~] Dockerfile: builds and runs locally, serves /ask (uvicorn main:app --host 0.0.0.0 --port 7860)
+- [x] README: RAG architecture description (ingestion->embedding->retrieval->generation, which file/node does what) + MOCK_LLM branch explanation
+- [x] tests for: classify_intent heuristic both branches, retrieval returns correct-doc chunks, mock response schema validity, /ask endpoint via TestClient
+- [x] light-theme custom demo frontend for /ask (extra, not required by spec, per user's UI request) — simple static page, not generic
 
 ## Root repo
 
-- [ ] root README.md: setup (per-module requirements.txt, why), how to run each module end to end, design-decision summary per module
-- [ ] .gitignore (venvs, __pycache__, .env, chroma persisted dir if large, etc.)
-- [ ] verify `git log --graph --all` shows branch + >=2 commits + merge
+- [x] root README.md: setup (per-module requirements.txt, why), how to run each module end to end, design-decision summary per module
+- [x] .gitignore (venvs, __pycache__, .env, chroma persisted dir if large, etc.)
+- [x] verify `git log --graph --all` shows branch + >=2 commits + merge
