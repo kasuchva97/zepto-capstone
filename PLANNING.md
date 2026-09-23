@@ -45,28 +45,28 @@ sufficient to satisfy the rubric, but natural feature branches per module are fi
 ## Module 2 — /analytics (50 marks)
 
 Part A — profiling/cleaning/EDA
-- [ ] load via sns.load_dataset('titanic'); df.info/describe/shape; % missing per column
-- [ ] save titanic.csv immediately after load (offline fallback); load exactly once, never reloaded for modeling
-- [ ] missing-value handling: <5% drop rows, 5-30% impute, very-high% -> drop col or "missing" category (state % per column + justification)
-- [ ] univariate: histogram + boxplot for age & fare; IQR outlier counts for both; mean/median/mode for fare + skew direction written
-- [ ] bivariate: survival rate by sex, by pclass, by sex+pclass (boolean masking); correlation matrix on exactly
+- [x] load via sns.load_dataset('titanic'); df.info/describe/shape; % missing per column
+- [x] save titanic.csv immediately after load (offline fallback); load exactly once, never reloaded for modeling
+- [x] missing-value handling: <5% drop rows, 5-30% impute, very-high% -> drop col or "missing" category (state % per column + justification)
+- [x] univariate: histogram + boxplot for age & fare; IQR outlier counts for both; mean/median/mode for fare + skew direction written
+- [x] bivariate: survival rate by sex, by pclass, by sex+pclass (boolean masking); correlation matrix on exactly
       [survived, pclass, age, sibsp, parch, fare] (exclude adult_male, alone); heatmap; top-2 |corr| pairs interpreted
-- [ ] multivariate data story: >=4 distinct charts, each with 2-4 sentence interpretation
-- [ ] z-score standardize age & fare (EDA sanity check only, not fed into modeling pipeline); before/after mean~0/std~1 shown
+- [x] multivariate data story: >=4 distinct charts, each with 2-4 sentence interpretation
+- [x] z-score standardize age & fare (EDA sanity check only, not fed into modeling pipeline); before/after mean~0/std~1 shown
 
 Part B — modeling
-- [ ] stratified train/test split on survived; justify via class balance
-- [ ] preprocessing fit on train only (ColumnTransformer + Pipeline): impute, encode sex/embarked, scale numerics
-- [ ] train LogisticRegression, DecisionTree, RandomForest on same split
-  - [ ] plot_tree for decision tree w/ feature & class names
-- [ ] evaluate all 3: confusion matrix, accuracy, precision, recall, F1, ROC/AUC; comparison table
-- [ ] imbalance comparison: baseline vs class_weight='balanced' vs SMOTE (train-fold only); compare P/R/F1; written conclusion
-- [ ] GridSearchCV over RF n_estimators/max_depth/max_features; RandomForestClassifier(oob_score=True); report best params + OOB score
-- [ ] regression side-task: predict fare from other features (multivariate linear regression); MAE, RMSE, R2, Adjusted R2; residual plot; heteroscedasticity conclusion
-- [ ] final comparison table: classifier metrics block + regression metrics block (separate groups) + 3-5 sentence recommendation
-- [ ] joblib.dump full fitted Pipeline (preprocessing+estimator) as one object; reload + predict-on-raw-input demo
-- [ ] tests for: missing-value thresholds applied correctly, no test-set leakage (preprocessing fit only on train), pipeline round-trips via joblib, metric functions correct
-- [ ] two notebooks (01_eda.ipynb, 02_modeling.ipynb) sharing committed titanic.csv, or equivalent clearly-ordered structure
+- [x] stratified train/test split on survived; justify via class balance
+- [x] preprocessing fit on train only (ColumnTransformer + Pipeline): impute, encode sex/embarked, scale numerics
+- [x] train LogisticRegression, DecisionTree, RandomForest on same split
+  - [x] plot_tree for decision tree w/ feature & class names
+- [x] evaluate all 3: confusion matrix, accuracy, precision, recall, F1, ROC/AUC; comparison table
+- [x] imbalance comparison: baseline vs class_weight='balanced' vs SMOTE (train-fold only); compare P/R/F1; written conclusion
+- [x] GridSearchCV over RF n_estimators/max_depth/max_features; RandomForestClassifier(oob_score=True); report best params + OOB score
+- [x] regression side-task: predict fare from other features (multivariate linear regression); MAE, RMSE, R2, Adjusted R2; residual plot; heteroscedasticity conclusion
+- [x] final comparison table: classifier metrics block + regression metrics block (separate groups) + 3-5 sentence recommendation
+- [x] joblib.dump full fitted Pipeline (preprocessing+estimator) as one object; reload + predict-on-raw-input demo
+- [x] tests for: missing-value thresholds applied correctly, no test-set leakage (preprocessing fit only on train), pipeline round-trips via joblib, metric functions correct
+- [x] two notebooks (01_eda.ipynb, 02_modeling.ipynb) sharing committed titanic.csv, or equivalent clearly-ordered structure
 
 ## Module 3 — /support_assistant (25 marks)
 

@@ -14,7 +14,7 @@ One connected platform, three modules, built and graded together:
 ## Status
 
 - [x] `/data_pipeline` — complete
-- [ ] `/analytics` — not started
+- [x] `/analytics` — complete
 - [ ] `/support_assistant` — not started
 
 ## Setup
@@ -49,7 +49,19 @@ python -m pytest -q       # 28 tests
 ```
 See [`data_pipeline/README.md`](data_pipeline/README.md) for full details.
 
-**Analytics** and **Support Assistant:** to be filled in as those modules land.
+**Analytics:**
+```bash
+cd analytics && python -m venv .venv && .venv\Scripts\activate
+pip install -r requirements.txt
+jupyter nbconvert --to notebook --execute --inplace 01_eda.ipynb       # Part A: profile, clean, EDA story; writes titanic.csv
+jupyter nbconvert --to notebook --execute --inplace 02_modeling.ipynb  # Part B: classification + regression pipeline
+python -m pytest -q       # 43 tests
+```
+Both notebooks are already committed pre-executed with full output, so re-running
+isn't required for grading. See [`analytics/README.md`](analytics/README.md) for
+full details, all written interpretations, and the model comparison table.
+
+**Support Assistant:** to be filled in once that module lands.
 
 ## Design decisions
 
@@ -67,7 +79,16 @@ median-imputed. `price_inr` uses the fixed 1 GBP = 105.50 INR baseline exactly a
 specified. Full rationale in [`data_pipeline/README.md`](data_pipeline/README.md).
 
 ### Analytics
-_TBD_
+One dataset loaded once (`sns.load_dataset` in `01_eda.ipynb`, cached to
+`titanic.csv`), cleaned with a measured-percentage threshold rule (drop `deck` at
+77% missing, impute `age` at 20% missing by pclass+sex median, drop 2 rows for
+`embarked` at 0.2% missing), then a full classification pipeline (Logistic
+Regression / Decision Tree / Random Forest, all inside `ColumnTransformer`+`Pipeline`
+so preprocessing is structurally fit-on-train-only) plus a `fare` regression
+side-task. Logistic Regression won on test F1 (0.756) even after `GridSearchCV`-tuning
+the Random Forest, and is the recommended deploy candidate. Full metrics, all written
+interpretations, and the model comparison table are in
+[`analytics/README.md`](analytics/README.md).
 
 ### Support Assistant
 _TBD_
