@@ -5,7 +5,7 @@ and stored in ChromaDB, orchestrated through a LangGraph `StateGraph` that class
 each query and either retrieves grounded context or gives a fixed fallback answer,
 wrapped in a FastAPI `POST /ask` endpoint with a Pydantic-validated response schema.
 Every LLM call is gated behind `MOCK_LLM` (default: deterministic mock, no API key, no
-network) — the required, graded baseline.
+network) — the default, fully offline path.
 
 ## Setup
 
@@ -73,13 +73,13 @@ verified without needing a Groq API key).
 
 ## `MOCK_LLM` toggle
 
-Left unset, or `MOCK_LLM=1` (the default): the graded baseline. No LLM API key or
-network call anywhere — `classify_intent` uses a keyword heuristic, and both answer
-nodes return deterministic canned text. Retrieval (embedding the query + querying
-ChromaDB) is **not** mocked in either mode — it's always real, since it needs no API
-key.
+Left unset, or `MOCK_LLM=1` (the default): the standard offline path. No LLM API key
+or network call anywhere — `classify_intent` uses a keyword heuristic, and both
+answer nodes return deterministic canned text. Retrieval (embedding the query +
+querying ChromaDB) is **not** mocked in either mode — it's always real, since it
+needs no API key.
 
-`MOCK_LLM=0` (optional, ungraded extension): requires `GROQ_API_KEY` in the
+`MOCK_LLM=0` (optional extension): requires `GROQ_API_KEY` in the
 environment (Groq's free tier, console.groq.com). `classify_intent` asks the LLM to
 classify instead of the keyword heuristic; `retrieve_and_answer` prompts the LLM
 (using the structured template in `src/prompts.py`) to answer grounded in the
@@ -87,17 +87,17 @@ retrieved chunks, requesting JSON matching the response schema and retrying up t
 additional times with a corrective instruction if the output fails to parse/validate
 (`src/llm.py:generate_structured_policy_answer_llm`) before giving up with a clearly
 marked error response; `direct_answer` prompts the LLM directly with no retrieval.
-This path was **not exercised against a real Groq account** in this submission (no
-API key was configured) — its retry logic is verified in `tests/test_llm_retry.py` by
-monkeypatching the low-level `_call_groq` call, and the graded `MOCK_LLM=1` path
-covers every acceptance criterion independently of it.
+This path was **not exercised against a real Groq account** here (no API key was
+configured) — its retry logic is verified in `tests/test_llm_retry.py` by
+monkeypatching the low-level `_call_groq` call, and the default `MOCK_LLM=1` path
+works fully independently of it.
 
 ## RAG pipeline architecture
 
 **Ingestion.** `src/ingest.py:load_documents()` reads the 8 files under `docs/`,
-one chunk per document (each is already a single short paragraph — no further
-splitting needed, per the assignment's own guidance). Each chunk keeps its document
-id (`doc_01`...`doc_08`) and source filename as metadata.
+one chunk per document (each is already a single short paragraph, so no further
+splitting is needed). Each chunk keeps its document id (`doc_01`...`doc_08`) and
+source filename as metadata.
 
 **Embedding.** `src/ingest.py:get_embedder()` loads `sentence-transformers`'
 `all-MiniLM-L6-v2` locally (cached after the first download; `HF_HUB_OFFLINE` is tried
@@ -110,8 +110,8 @@ committed — see `.gitignore`).
 **Retrieval.** `src/ingest.py:retrieve_top_k()` embeds the incoming query with the
 same model and queries the `zepto_policies` collection for its top-3 nearest chunks by
 cosine similarity. This is called from the `retrieve_and_answer` node in
-`src/graph.py` — and, per the assignment, runs for real in **both** `MOCK_LLM` modes,
-since it needs no API key.
+`src/graph.py` and runs for real in **both** `MOCK_LLM` modes, since it needs no API
+key.
 
 **Generation.** `src/graph.py` is a LangGraph `StateGraph` (`SupportState`
 `TypedDict`: `query, intent, answer, sources, confidence`) with 3 nodes:

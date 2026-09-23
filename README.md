@@ -1,21 +1,12 @@
 # Zepto Data & AI Platform — Capstone Project
 
-One connected platform, three modules, built and graded together:
+One connected platform, three modules:
 
-| Module | Path | What it does | Marks |
-|---|---|---|---|
-| Data Pipeline | [`/data_pipeline`](data_pipeline/README.md) | Scrapes books.toscrape.com, cleans it, converts currency, loads it into a normalized SQLite schema, queries it with SQL and pandas | 25 |
-| Analytics | [`/analytics`](analytics/README.md) | Profiles, cleans and visualizes the Titanic dataset, then builds and rigorously evaluates a full classification + regression modeling pipeline | 50 |
-| Support Assistant | [`/support_assistant`](support_assistant/README.md) | A LangGraph-orchestrated RAG service (ChromaDB + sentence-transformers) answering Zepto policy questions, wrapped in FastAPI, fully testable offline via a deterministic mock LLM mode | 25 |
-
-> This README is filled in progressively as each module is completed. See `PLANNING.md`
-> for the full internal task checklist (not a deliverable — just working notes).
-
-## Status
-
-- [x] `/data_pipeline` — complete
-- [x] `/analytics` — complete
-- [x] `/support_assistant` — complete
+| Module | Path | What it does |
+|---|---|---|
+| Data Pipeline | [`/data_pipeline`](data_pipeline/README.md) | Scrapes books.toscrape.com, cleans it, converts currency, loads it into a normalized SQLite schema, queries it with SQL and pandas |
+| Analytics | [`/analytics`](analytics/README.md) | Profiles, cleans and visualizes the Titanic dataset, then builds and rigorously evaluates a full classification + regression modeling pipeline |
+| Support Assistant | [`/support_assistant`](support_assistant/README.md) | A LangGraph-orchestrated RAG service (ChromaDB + sentence-transformers) answering Zepto policy questions, wrapped in FastAPI, fully testable offline via a deterministic mock LLM mode |
 
 ## Setup
 
@@ -67,8 +58,8 @@ jupyter nbconvert --to notebook --execute --inplace 02_modeling.ipynb  # Part B:
 python -m pytest -q       # 43 tests
 ```
 Both notebooks are already committed pre-executed with full output, so re-running
-isn't required for grading. See [`analytics/README.md`](analytics/README.md) for
-full details, all written interpretations, and the model comparison table.
+isn't necessary just to read the results. See [`analytics/README.md`](analytics/README.md)
+for full details, all written interpretations, and the model comparison table.
 
 **Support Assistant:**
 ```bash
@@ -77,14 +68,11 @@ pip install -r requirements.txt
 uvicorn main:app --host 127.0.0.1 --port 8000   # then open http://127.0.0.1:8000/
 python -m pytest -q       # 39 tests
 ```
-`MOCK_LLM` is left at its default (deterministic, offline, no API key) for grading.
+`MOCK_LLM` is left at its default (deterministic, offline, no API key) by default.
 See [`support_assistant/README.md`](support_assistant/README.md) for the architecture
 description, example `/ask` calls, and Docker instructions.
 
 ## Design decisions
-
-Summarized per module below once each module is complete; full detail lives in each
-module's own README.
 
 ### Data Pipeline
 Scrapes 3 named categories (Mystery/Historical Fiction/Classics, 77 books total,
@@ -113,17 +101,15 @@ interpretations, and the model comparison table are in
 API key) into ChromaDB, orchestrated by a 3-node LangGraph `StateGraph`
 (`classify_intent` → conditional edge → `retrieve_and_answer` / `direct_answer`).
 Retrieval always runs for real; only each node's final answer-generation step is
-gated behind `MOCK_LLM` (default: deterministic canned logic, no LLM call at all —
-the graded baseline; `MOCK_LLM=0` is an optional, ungraded Groq extension, not
-exercised against a real account in this submission). Wrapped in FastAPI (`POST
-/ask`, Pydantic-validated schema) with a custom light-theme demo page. **Note:**
-Docker isn't installed in the environment this was built in, so the `Dockerfile` was
-written and reviewed carefully but not build-tested end-to-end — see
-[`support_assistant/README.md`](support_assistant/README.md) for details and to
-verify it yourself.
+gated behind `MOCK_LLM` (default: deterministic canned logic, no LLM call at all;
+`MOCK_LLM=0` is an optional Groq extension, not exercised against a real account in
+this submission). Wrapped in FastAPI (`POST /ask`, Pydantic-validated schema) with a
+custom light-theme demo page. **Note:** Docker isn't installed in the environment
+this was built in, so the `Dockerfile` was written and reviewed carefully but not
+build-tested end-to-end — see [`support_assistant/README.md`](support_assistant/README.md)
+for details and to verify it yourself.
 
 ## Git workflow
 
-This repository's history includes a feature branch created, committed to at least
-twice, and merged back into `main` (see `git log --graph --all`), as required by the
-project's git-workflow rubric item.
+This repository's history includes a feature branch per module, each committed to
+multiple times and merged back into `main` (see `git log --graph --all`).

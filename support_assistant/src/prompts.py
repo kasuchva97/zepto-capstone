@@ -2,8 +2,8 @@
 negative constraint, and a few-shot example), used by the optional
 MOCK_LLM=0 real-LLM path in src/graph.py's retrieve_and_answer node.
 
-Not used in the default (mock) grading path -- the mock path never calls an
-LLM at all -- but the template itself must exist as real text regardless.
+Not used in the default (mock) path -- the mock path never calls an LLM at
+all -- but the template itself exists as real text regardless.
 """
 from __future__ import annotations
 

@@ -22,3 +22,6 @@ support_assistant/chroma_store/
 
 # Large model download caches (sentence-transformers, seaborn)
 .cache/
+
+# Local editor/tooling config (machine-specific, not part of the submission)
+.claude/

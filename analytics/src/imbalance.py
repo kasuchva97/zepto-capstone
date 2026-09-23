@@ -2,8 +2,9 @@
 and SMOTE (oversampling the training fold only, via an imblearn Pipeline so
 resampling is structurally excluded from the test-time transform path).
 
-Uses Logistic Regression as the single model for this comparison, as the
-assignment allows ("any one of the three models is enough for this sub-task").
+Uses Logistic Regression as the single model for this comparison -- simple and
+fast enough to run all three variants without needing to repeat the exercise
+across every classifier.
 """
 from __future__ import annotations
 

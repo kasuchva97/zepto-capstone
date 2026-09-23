@@ -24,7 +24,7 @@ class TestLoadTitanicAndCache:
         pd.testing.assert_frame_equal(pd.read_csv(csv_path), fake_df)
 
     def test_falls_back_to_committed_csv_when_network_call_fails(self, tmp_path, monkeypatch):
-        """The real-world scenario this guards against: a grader with no
+        """The real-world scenario this guards against: someone with no
         internet at all runs 01_eda.ipynb; sns.load_dataset raises, but the
         committed titanic.csv is right there, so this must not crash."""
         csv_path = tmp_path / "titanic.csv"

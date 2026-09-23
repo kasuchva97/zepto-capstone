@@ -32,9 +32,9 @@ This scrapes fresh data from the live site (needs internet), cleans it, (re)buil
 query's SQL and printed output.
 
 The repository already includes the regenerated outputs under `data/` (`books_raw.csv`,
-`books_clean.csv`, `zepto_books.db`, `query_output.md`) from the last run, so grading
-doesn't strictly require re-running the scrape — but `pipeline.py` is the exact,
-from-scratch regeneration script if you want to reproduce it.
+`books_clean.csv`, `zepto_books.db`, `query_output.md`) from the last run, so
+re-running the scrape isn't necessary just to inspect the results — but `pipeline.py`
+is the exact, from-scratch regeneration script if you want to reproduce it.
 
 ## Run tests
 
@@ -67,8 +67,8 @@ numbers instead of failing loudly.
 rationale):
 - `title` / `category` missing → **row dropped**. They're the row's identity; nothing
   sensible to impute.
-- `price_gbp` unparseable → **median-imputed** (numeric field, per the assignment's
-  stated fallback rule).
+- `price_gbp` unparseable → **median-imputed** (numeric field, per the stated
+  fallback rule).
 - `rating` unparseable → **median-imputed**, rounded back to the nearest int 1–5
   (treated as an ordinal-numeric field, so the same median rule applies).
 - `in_stock` unparseable → **row dropped**, not imputed. It's boolean, not numeric, so
@@ -87,7 +87,7 @@ fully correct from the required fixed-rate baseline alone.
 **Schema.** Two tables, `categories(category_id PK, category_name UNIQUE)` and
 `books(book_id PK, title, price_gbp, price_inr, rating, in_stock, category_id FK)`,
 with `CHECK` constraints on `rating` (1–5) and `in_stock` (0/1) for defense in depth
-beyond what the assignment strictly requires. See `src/db.py:SCHEMA_SQL`.
+beyond the minimum needed. See `src/db.py:SCHEMA_SQL`.
 
 **Queries** (`src/queries.py:QUERIES`, output in `data/query_output.md`):
 | Query | Clauses demonstrated |

@@ -1,6 +1,6 @@
 """Tests the retry-on-validation-failure logic for the optional MOCK_LLM=0
-path (Task 4's requirement) without needing a real Groq API key -- by
-monkeypatching the low-level _call_groq function."""
+path without needing a real Groq API key -- by monkeypatching the
+low-level _call_groq function."""
 import src.llm as llm_module
 from src.llm import generate_structured_policy_answer_llm
 

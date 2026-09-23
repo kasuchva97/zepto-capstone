@@ -21,8 +21,7 @@ def load_titanic_and_cache(csv_path: pathlib.Path = CSV_FALLBACK_PATH) -> pd.Dat
     later calls on the same machine reuse seaborn's own cache. If the network
     call fails outright (no internet at all, not even for seaborn's own
     first-time fetch) and the committed `titanic.csv` already exists, falls
-    back to reading that instead of crashing -- this is the exact scenario
-    the assignment's own offline-fallback requirement describes.
+    back to reading that instead of crashing.
     """
     import seaborn as sns
 

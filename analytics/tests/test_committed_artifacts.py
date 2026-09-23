@@ -1,6 +1,7 @@
 """Integration tests against the actual committed deliverables (titanic.csv,
 the saved joblib pipeline) rather than synthetic fixtures -- catches issues
-that only show up in the real generated artifacts a grader will open."""
+that only show up in the real generated artifacts, not just the logic that
+produces them."""
 import pathlib
 
 import pandas as pd

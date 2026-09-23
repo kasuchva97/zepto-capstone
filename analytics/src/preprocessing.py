@@ -1,6 +1,6 @@
 """Train-only-fit preprocessing for the classification pipeline.
 
-Modeling feature set (documented decision, Task 8): pclass, sex, age, sibsp,
+Modeling feature set (documented decision): pclass, sex, age, sibsp,
 parch, fare, embarked. `class`, `who`, `adult_male`, `alone`, `embark_town`
 are dropped here -- all derived from / redundant with the columns already
 kept (class~pclass, who/adult_male~age+sex, alone~sibsp+parch,

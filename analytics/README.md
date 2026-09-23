@@ -49,8 +49,9 @@ jupyter nbconvert --to notebook --execute --inplace 01_eda.ipynb
 jupyter nbconvert --to notebook --execute --inplace 02_modeling.ipynb
 ```
 `01_eda.ipynb` must run first — it writes `titanic.csv`, which `02_modeling.ipynb`
-reads. Both notebooks are already included pre-executed with full output, so grading
-doesn't require re-running them, but they're fully reproducible from scratch (only
+reads. Both notebooks are already included pre-executed with full output, so
+re-running them isn't necessary just to read the results, but they're fully
+reproducible from scratch (only
 `01_eda.ipynb`'s first cell needs internet, for the one `sns.load_dataset` call).
 
 ## Run tests

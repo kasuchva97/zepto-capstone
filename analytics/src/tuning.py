@@ -2,7 +2,7 @@
 with an OOB score reported for the best refit estimator.
 
 oob_score_ is only populated when oob_score=True was passed at construction
-time, so the estimator inside the grid is built that way (Task 12 note).
+time, so the estimator inside the grid is built that way.
 """
 from __future__ import annotations
 

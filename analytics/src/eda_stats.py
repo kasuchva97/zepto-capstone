@@ -64,9 +64,9 @@ def correlation_matrix(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def zscore_standardize(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    """EDA-stage-only sanity check (Task 6): z = (x - mean) / std over the
-    full cleaned DataFrame. Not used by the modeling pipeline, which does its
-    own train-only StandardScaler fit inside the ColumnTransformer."""
+    """EDA-stage-only sanity check: z = (x - mean) / std over the full
+    cleaned DataFrame. Not used by the modeling pipeline, which does its own
+    train-only StandardScaler fit inside the ColumnTransformer."""
     out = df.copy()
     for col in columns:
         out[col] = (df[col] - df[col].mean()) / df[col].std()

@@ -1,6 +1,6 @@
 """Missing-value profiling and threshold-based cleaning for the Titanic dataset.
 
-Threshold rule applied per column (per assignment spec):
+Threshold rule applied per column:
   < 5% missing   -> drop the affected rows
   5% - 30%       -> impute
   very high (>50%, unreliable to impute) -> drop the column, or encode
@@ -29,7 +29,7 @@ rather than kept around as a temptation to accidentally use as a feature.
 `class`, `who`, `embark_town`, `adult_male` and `alone` are all kept in the
 cleaned EDA DataFrame (useful for the multivariate data story's charts);
 the *modeling* feature subset is a separate, later decision made in
-`src/preprocessing.py` (Task 8), not here.
+`src/preprocessing.py`, not here.
 """
 from __future__ import annotations
 

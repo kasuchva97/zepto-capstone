@@ -1,7 +1,7 @@
 """MOCK_LLM toggle: every LLM call in this module goes through here so the
-graph nodes stay simple. MOCK_LLM unset or "1" (the default, graded
-baseline) never imports/calls a real LLM provider -- no network, no API key.
-MOCK_LLM=0 is the optional, ungraded extension calling Groq's free tier.
+graph nodes stay simple. MOCK_LLM unset or "1" (the default) never
+imports/calls a real LLM provider -- no network, no API key. MOCK_LLM=0 is
+an optional extension calling Groq's free tier.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ KEYWORDS = ["delivery", "return", "refund", "membership", "tracking", "cancel", 
 
 
 def classify_intent_mock(query: str) -> str:
-    """Keyword heuristic, no LLM call. The required, graded baseline."""
+    """Keyword heuristic, no LLM call."""
     lowered = query.lower()
     return "policy_question" if any(kw in lowered for kw in KEYWORDS) else "general_question"
 
@@ -37,7 +37,7 @@ def classify_intent_llm(query: str) -> str:
 
 
 def generate_policy_answer_mock(top_chunk_text: str) -> str:
-    """Canned template, no LLM call. The required, graded baseline."""
+    """Canned template, no LLM call."""
     snippet = top_chunk_text[:200]
     return f"Based on the retrieved context: {snippet}"
 
@@ -59,9 +59,9 @@ def generate_structured_policy_answer_llm(prompt: str, max_retries: int = 2) -> 
     as JSON matching {"answer": str, "confidence": float 0-1}. If the raw
     output fails to parse/validate, retries up to `max_retries` additional
     times with a corrective instruction appended before giving up and
-    returning a clearly marked error response (Task 4's retry requirement).
-    `sources` is filled in by the caller from the actual retrieved chunk
-    ids, never by the LLM, so it can't be hallucinated.
+    returning a clearly marked error response. `sources` is filled in by the
+    caller from the actual retrieved chunk ids, never by the LLM, so it
+    can't be hallucinated.
     """
     current_prompt = prompt + _JSON_OUTPUT_INSTRUCTION
     last_error: Exception | None = None
@@ -86,7 +86,7 @@ def generate_structured_policy_answer_llm(prompt: str, max_retries: int = 2) -> 
 
 
 def generate_direct_answer_mock() -> str:
-    """Fixed canned string, no LLM call. The required, graded baseline."""
+    """Fixed canned string, no LLM call."""
     return "I can only answer questions about Zepto policies right now."
 
 

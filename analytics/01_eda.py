@@ -39,9 +39,9 @@ os.makedirs(CHARTS_DIR, exist_ok=True)
 # ## 1. Load once, profile, and save the offline CSV fallback
 #
 # The very next line is the **only** `sns.load_dataset('titanic')` call in
-# the whole `/analytics` module. It immediately writes `titanic.csv` so
-# grading works even if `sns.load_dataset` can't reach the network at
-# grading time (`pd.read_csv("titanic.csv")` reproduces the same raw frame).
+# the whole `/analytics` module. It immediately writes `titanic.csv` so this
+# still works even if `sns.load_dataset` can't reach the network on a later
+# run (`pd.read_csv("titanic.csv")` reproduces the same raw frame).
 
 # %%
 raw_df = load_titanic_and_cache()
