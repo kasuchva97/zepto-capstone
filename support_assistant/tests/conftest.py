@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("MOCK_LLM", "1")  # tests always exercise the required, graded mock path
+os.environ.setdefault("MOCK_LLM", "1")  # tests always exercise the default offline mock path
 
 import pytest
 

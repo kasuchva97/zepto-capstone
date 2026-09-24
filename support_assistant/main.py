@@ -1,6 +1,6 @@
 """FastAPI wrapper around the LangGraph support-assistant graph.
 
-POST /ask -- the graded endpoint (AskRequest -> AskResponse).
+POST /ask -- the main endpoint (AskRequest -> AskResponse).
 GET  /    -- a small light-theme demo page for trying /ask by hand.
 """
 from __future__ import annotations

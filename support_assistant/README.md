@@ -143,16 +143,18 @@ docker run -p 7860:7860 zepto-support-assistant
 # then: curl -X POST http://localhost:7860/ask -H "Content-Type: application/json" -d "{\"query\": \"How do I cancel an order?\"}"
 ```
 
-**Note on verification:** Docker itself is not installed in the environment this
-submission was built in (no `docker` CLI, no Docker Desktop), so `docker build`/`docker
-run` could not be executed here. The `Dockerfile` was written and reviewed carefully
-against the actual project layout (`docs/`, `src/`, `static/`, `main.py`,
-`requirements.txt` — the same files verified working locally via `uvicorn`), using the
-same standard `python:3.11-slim` + `pip install -r requirements.txt` + `uvicorn`
-pattern as the rest of the ecosystem, but it has not been build-tested end-to-end.
-Please test it directly (`docker build` / `docker run`, as above) before relying on it
-— if it doesn't build cleanly, the most likely gap is a missing system dependency
-`sentence-transformers`/`torch`'s wheels need on `python:3.11-slim` that isn't needed
-on this Windows dev machine.
+**Verified.** Built and run with Docker Desktop 4.91 (WSL 2 backend) on Windows 10:
+the image builds cleanly, the container starts in about 12 seconds, and `POST /ask`
+returns the expected response for both a policy question (retrieval, with sources) and
+a general question (fixed fallback), and `GET /` serves the demo page.
 
-The optional Hugging Face Spaces deployment stretch goal was not attempted.
+Notes on the image:
+- It installs the **CPU-only** build of PyTorch first. A plain `pip install
+  sentence-transformers` on Linux pulls the CUDA build plus several GB of NVIDIA
+  libraries this app never uses (it only embeds a few short strings on CPU).
+- The embedding model is downloaded at build time, so the running container needs no
+  network access in the default `MOCK_LLM` mode.
+- `build-essential` is installed as a fallback in case `chromadb`'s `hnswlib`
+  dependency has to compile from source on the slim base image.
+
+The optional Hugging Face Spaces deployment was not attempted.

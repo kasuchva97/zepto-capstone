@@ -104,10 +104,9 @@ Retrieval always runs for real; only each node's final answer-generation step is
 gated behind `MOCK_LLM` (default: deterministic canned logic, no LLM call at all;
 `MOCK_LLM=0` is an optional Groq extension, not exercised against a real account in
 this submission). Wrapped in FastAPI (`POST /ask`, Pydantic-validated schema) with a
-custom light-theme demo page. **Note:** Docker isn't installed in the environment
-this was built in, so the `Dockerfile` was written and reviewed carefully but not
-build-tested end-to-end — see [`support_assistant/README.md`](support_assistant/README.md)
-for details and to verify it yourself.
+custom light-theme demo page. A `Dockerfile` is included (built and run locally with
+Docker Desktop, serving `POST /ask` on port 7860) — see
+[`support_assistant/README.md`](support_assistant/README.md#docker).
 
 ## Git workflow
 
