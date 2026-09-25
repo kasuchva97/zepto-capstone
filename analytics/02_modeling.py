@@ -180,16 +180,16 @@ imbalance_results = compare_imbalance_strategies(X_train, y_train, X_test, y_tes
 imbalance_results.round(4)
 
 # %% [markdown]
-# **Conclusion** (filled in after running the cell above with real numbers —
-# see the printed table): the imbalance here is mild (~62/38, not extreme),
-# so the differences between strategies tend to be modest. `class_weight=
-# 'balanced'` and SMOTE typically trade a little precision for higher
-# recall relative to the baseline (they push the model to call more
-# borderline cases "survived"), since both explicitly compensate for the
-# smaller `survived` class either by reweighting the loss or by synthesizing
-# more minority-class training examples. Whichever of the three has the
-# highest F1 in the printed table is the best balance of the two for this
-# dataset — see the notebook run for which one actually won.
+# **Conclusion.** The baseline (no handling) wins on F1: precision 0.814,
+# recall 0.706, F1 0.756, versus F1 0.739 for `class_weight='balanced'`
+# (precision 0.729, recall 0.750) and F1 0.735 for SMOTE (precision 0.735,
+# recall 0.735). Both rebalancing strategies do what they are meant to —
+# recall rises by 3 to 4 points because the model is pushed to call more
+# borderline cases "survived" — but they give up 8 points of precision to get
+# it, which is a bad trade. That is expected here: the imbalance is mild
+# (~62/38, not extreme), so there is little minority-class signal being
+# ignored in the first place. These techniques would earn their keep on a much
+# more skewed target; on this one they mostly add noise.
 
 # %% [markdown]
 # ## 6. Hyperparameter tuning: GridSearchCV over Random Forest
@@ -266,26 +266,22 @@ best_model_name = classifier_block["f1"].idxmax()
 print(f"\nBest classifier by test F1: {best_model_name}")
 
 # %% [markdown]
-# **Recommendation.** *(Read together with the two tables printed just
-# above — the specific numbers there are what this paragraph refers to.)*
-# Across accuracy, precision, recall, F1 and ROC-AUC, the classifiers land
-# within a few points of each other, which is typical for this dataset's
-# size and feature set. The model selected as "best" above is whichever
-# scored the highest F1 on the held-out test set — F1 rather than raw
-# accuracy, because `survived` is imbalanced enough (~62/38) that accuracy
-# alone rewards a lazy majority-class-leaning model. Random Forest's tuned
-# variant is included specifically to check whether `GridSearchCV` improved
-# on the untuned baseline; if it does not clearly beat Logistic Regression's
-# untuned F1, that's a sign this dataset's signal is close to fully captured
-# by a simple linear boundary over these 7 features, and the extra
-# complexity of an ensemble isn't buying much. The regression side-task's
-# R2 (see the table above) is far lower than any classifier's accuracy — as
-# expected, since predicting a continuous, heavy-tailed value like `fare`
-# from a handful of categorical/ordinal passenger attributes is a
-# fundamentally harder, noisier problem than the binary survival
-# classification, and the two are not on a comparable scale, which is why
-# they're reported as two separate metric blocks above rather than merged
-# into one.
+# **Recommendation: deploy Logistic Regression.** It has the best F1 (0.756),
+# accuracy (0.826) and ROC-AUC (0.860) of the four classifier variants; the
+# untuned Random Forest reaches F1 0.718 and AUC 0.836, the Decision Tree
+# F1 0.688 and AUC 0.834, and the `GridSearchCV`-tuned Random Forest
+# (300 trees, `max_features='sqrt'`, unlimited depth) closes only part of the
+# gap at F1 0.742 and AUC 0.836. F1 is the deciding metric rather than raw
+# accuracy because `survived` is imbalanced (~62/38), so accuracy alone
+# rewards a model that leans toward the majority class. That a simple linear
+# model beats a tuned ensemble suggests these 7 features are already captured
+# by a near-linear boundary, so the ensemble's extra complexity buys nothing.
+# The `fare` regression is a different kind of problem and is deliberately
+# reported separately: its R2 of 0.349 (Adjusted R2 0.310, MAE 21.12, RMSE
+# 41.68) is far below any classifier's accuracy, but a continuous, heavy-tailed
+# value predicted from a handful of passenger attributes is inherently
+# noisier than a binary label, and the two sets of metrics are not on a
+# comparable scale.
 
 # %% [markdown]
 # ## 9. Persist the best full pipeline (preprocessing + estimator)
